@@ -253,7 +253,9 @@ table {
 html,
 body {
   width: 100%;
+  min-width: 1070px;
   height: 100%;
+  min-height: 470px;
   position: relative;
   overflow: hidden;
   padding: 0;
@@ -261,7 +263,8 @@ body {
   font-family: Roboto, Calibri, Helvetica, Open Sans;
 }
 body {
-  background-color: #000;
+  background-color: #1b1b1b;
+  padding-left: 300px;
 }
 .list {
   position: absolute;
@@ -278,32 +281,33 @@ ul li {
   width: 100%;
   height: 80px;
   line-height: 80px;
-  padding: 0 30px;
   position: relative;
+  border-bottom: 1px solid #249f89;
+  background-color: #1b1b1b;
+  -webkit-transition: background-color 0.3s;
+  transition: background-color 0.3s;
 }
-ul li::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  -webkit-transform: translateX(-50%);
-          transform: translateX(-50%);
-  bottom: 0%;
-  width: 60%;
-  height: 1px;
-  background-color: #249f89;
+ul li:nth-child(2n+1) {
+  background-color: #202020;
+}
+ul li:last-child {
+  border-bottom: none;
 }
 ul li a {
   color: #249f89;
   display: block;
   width: 100%;
   height: 100%;
+  padding: 0 30px;
+  text-transform: uppercase;
   text-decoration: none;
   font-weight: 800;
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-transform: uppercase;
+  -webkit-transition: color 0.3s;
+  transition: color 0.3s;
 }
 ul li a::before {
   content: '';
@@ -317,10 +321,64 @@ ul li a::before {
   position: relative;
   top: 8px;
 }
-ul li a.playing::before {
-  background-position: right 4px center;
+ul li:hover {
+  background: rgba(36,159,137,0.3);
 }
-.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
+ul li.playing {
+  background: #249f89;
+}
+ul li.playing:first-child {
+  border-top: none;
+}
+ul li.playing a {
+  color: #fff;
+}
+ul li.playing a::before {
+  border-color: #fff;
+  background-position: right 3px center;
+}
+main {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+main form {
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+main form div {
+  font-size: 10px;
+  color: #fff;
+  font-style: italic;
+}
+main form input[type=text] {
+  margin-top: 10px;
+  border: 1px solid #249f89;
+  background-color: transparent;
+  color: #fff;
+  font-style: italic;
+  height: 40px;
+  line-height: 40px;
+  width: 80%;
+  text-align: left;
+  padding-left: 20px;
+  vertical-align: bottom;
+}
+main form input[type=submit] {
+  border: 0;
+  background-color: #fff;
+  height: 40px;
+  line-height: 40px;
+  color: #249f89;
+  text-transform: uppercase;
+  font-weight: 800;
+  padding: 0 30px;
+  vertical-align: bottom;
+}
+main form input[type=submit]:hover {
+  color: #fff;
   background-color: #249f89;
 }
 .berghain {
@@ -329,9 +387,9 @@ ul li a.playing::before {
   left: 50%;
   -webkit-transform: translateY(-50%) translateX(-50%);
           transform: translateY(-50%) translateX(-50%);
-  margin-left: 150px;
   width: 450px;
   height: 330px;
+  margin-left: 0 auto;
   background: url("./bg.png") center top no-repeat transparent;
 }
 .berghain canvas {
@@ -339,4 +397,7 @@ ul li a.playing::before {
   top: 60px;
   display: block;
   margin: 0 auto;
+}
+.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
+  background-color: rgba(255,255,255,0.7);
 }
