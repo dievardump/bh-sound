@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Berghain window sound equalizer</title>
+		<title>Sound Equalizer</title>
 		<link rel='stylesheet' type='text/css' href='./assets/main.css' />
 		<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 	</head>
@@ -9,7 +9,15 @@
 		<div id='list' class='list'>
 			<ul class='content'></ul>
 		</div>
-		<div class='berghain' id='berghain'></div>
+
+		<main>
+			<form action'#' id='fetch'>
+				<div>Enter SoundCloud user, playlist or song url</div>
+				<input type='text' value='https://soundcloud.com/ostgutton-official/' id='soundcloundURL' />
+				<input type='submit' value='fetch' />
+			</form>
+			<div class='berghain' id='berghain'></div>
+		</main>
 
 		<script src="https://connect.soundcloud.com/sdk/sdk-3.0.0.js"></script>
 		<script src='./assets/index.js'></script>

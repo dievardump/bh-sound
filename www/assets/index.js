@@ -18,10 +18,10 @@ var audio = void 0;
 // get the context from the canvas to draw on
 var canvas = document.createElement('canvas');
 
-var bars = 12,
+var bars = 13,
     spaces = bars - 1,
-    barSize = 20,
-    spaceSize = barSize / 2,
+    barSize = 18,
+    spaceSize = 11,
     width = canvas.width = bars * barSize + spaces * spaceSize,
     height = canvas.height = 160,
     startX = width / 2 - (bars / 2 * barSize + spaces / 2 * spaceSize),
@@ -30,6 +30,7 @@ var bars = 12,
 document.getElementById('berghain').appendChild(canvas);
 
 ctx.fillStyle = '#249f89';
+ctx.strokeStyle = '#249f89';
 
 function setupAudioNodes() {
     analyser = analyser || context.createAnalyser();
@@ -45,17 +46,21 @@ function setupAudioNodes() {
 }
 
 function loadSong(url) {
-    if (audio) audio.remove();
-    if (sourceNode) sourceNode.disconnect();
-    cancelAnimationFrame(audioAnimation);
     if (audio) {
         audio.pause();
+        audio.remove();
     }
+    if (sourceNode) sourceNode.disconnect();
+    cancelAnimationFrame(audioAnimation);
 
     audio = new Audio();
     audio.crossOrigin = 'anonymous';
     audio.addEventListener("canplay", function (e) {
         setupAudioNodes();
+    }, false);
+
+    audio.addEventListener("ended", function (e) {
+        playNextLink();
     }, false);
 
     audio.src = url;
@@ -68,26 +73,42 @@ function drawSpectrum() {
     audioAnimation = requestAnimationFrame(drawSpectrum);
     for (var i = 0; i < array.length && i < bars; i++) {
         var value = array[i] * height / 256;
+        ctx.strokeRect(startX + i * (barSize + spaceSize), 0, barSize, height);
         ctx.fillRect(startX + i * (barSize + spaceSize), height - value, barSize, height);
     }
 }
 
+function playNextLink() {
+    var links = [].slice.call(document.querySelectorAll('a'));
+    if (links.length > 1) {
+        var index = 0;
+        if (currentLink) {
+            index = links.indexOf(currentLink);
+            index = (index + 1) % links.length;
+        }
+
+        links[index].click();
+    }
+}
+
 var __CLIENT_ID__ = '79ecc88b1e805bffdffe7b1665167d02';
-var panoURL = 'https://soundcloud.com/ostgutton-official/';
 var Ps = require('perfect-scrollbar');
 var currentLink = null;
+var el = document.getElementById('list'),
+    list = el.querySelector('ul'),
+    error = document.getElementById('error');
 
-document.addEventListener('DOMContentLoaded', function () {
-    var el = document.getElementById('list'),
-        list = el.querySelector('ul');
-
-    SC.initialize({
-        client_id: __CLIENT_ID__
-    });
-
-    SC.resolve(panoURL).then(function (user) {
-        if (user) {
-            return SC.get('/users/' + user.id + '/tracks');
+function loadURL(url) {
+    SC.resolve(url).then(function (resolve) {
+        if (resolve) {
+            console.log(resolve);
+            if (resolve.kind === 'user') {
+                return SC.get('/users/' + resolve.id + '/tracks');
+            } else if (resolve.kind === "playlist") {
+                return resolve.tracks;
+            } else if (resolve.kind === 'track') {
+                return [resolve];
+            }
         }
     }).then(function (tracks) {
         console.log(tracks);
@@ -113,19 +134,41 @@ document.addEventListener('DOMContentLoaded', function () {
             list.querySelector('a').click();
         }
     });
+}
 
-    function scLoadTrack(event) {
-        event.preventDefault();
-        var element = event.currentTarget,
-            link = element.href;
+function scLoadTrack(event) {
+    event.preventDefault();
+    var element = event.currentTarget,
+        link = element.href;
 
-        if (currentLink) {
-            currentLink.classList.remove('playing');
-        }
-        currentLink = element;
-        currentLink.classList.add('playing');
-        loadSong(link + '?client_id=' + __CLIENT_ID__);
+    if (currentLink) {
+        currentLink.parentNode.classList.remove('playing');
     }
+    if (element !== currentLink) {
+        currentLink = element;
+        currentLink.parentNode.classList.add('playing');
+        loadSong(link + '?client_id=' + __CLIENT_ID__);
+    } else {
+        audio.pause();
+        currentLink = null;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    SC.initialize({
+        client_id: __CLIENT_ID__
+    });
+
+    document.getElementById('fetch').addEventListener('submit', function (event) {
+        event.preventDefault();
+        var url = document.getElementById('soundcloundURL').value;
+        if (url) {
+            loadURL(url);
+        }
+    });
+
+    document.querySelector('input[type="submit"]').click();
 
     Ps.initialize(el);
 });

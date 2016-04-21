@@ -2,13 +2,17 @@
 @require "./perfect-scrollbar.styl";
 
 $green = #249f89;
+$grayDark = #1b1b1b;
+$grayLight = #202020;
 * {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 }
 html, body {
 	width: 100%;
+	min-width: 1070px;
 	height: 100%;
+	min-height: 470px;
 	position: relative;
 	overflow: hidden;
 	padding: 0;
@@ -17,7 +21,8 @@ html, body {
 }
 
 body {
-	background-color: #000;
+	background-color: $grayDark;
+	padding-left: 300px;
 }
 
 .list {
@@ -35,31 +40,37 @@ ul {
 		width: 100%;
 		height: 80px;
 		line-height: 80px;
-		padding: 0 30px;
 		
 		position: relative;
-		&::after {
-			content: '';
-			position: absolute;
-			left: 50%;
-			transform: translateX(-50%);
- 			bottom: 0%;
-			width: 60%;
-			height: 1px;
-			background-color: $green;
-		}	
+		border-bottom: 1px solid $green;
+		
+		background-color: $grayDark;
+		transition: background-color .3s;
+		
+		&:nth-child(2n+1) {
+			background-color: $grayLight;
+		}
+		
+		&:last-child {
+			border-bottom: none;
+		}
+		
 		a {
 			color: $green;
 			display: block;
 			width: 100%;
 			height: 100%;
+			padding: 0 30px;
+			
+			text-transform: uppercase;
 			text-decoration: none;
 			font-weight: 800;
 			font-size: 12px;
+			
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			text-transform: uppercase;
+			transition: color .3s;
 			
 			&::before {
 				content: '';
@@ -74,26 +85,89 @@ ul {
 				top: 8px;
 				
 			}
+		}
+		
+		&:hover {
+			background: alpha($green, .3);
+		}
+		
+		&.playing {
+			background: $green;
 			
-			&.playing::before {
-				background-position: right 4px center;
+			&:first-child {
+				border-top: none;
+			}
+			
+			a {
+				color: #fff;
+				&::before {
+					border-color: #fff;
+					background-position: right 3px center;
+				}
 			}
 		}
 	}	
 }
 
-.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
-	background-color: $green;
-}
+main {
+	display: block;
+	width: 100%;
+	height: 100%;
+	position: relative;
+	
+	form {
+		width: 80%;
+		margin: 0 auto;
+		margin-top: 30px;
+		
+		div {
+			font-size: 10px;
+			color: #fff;
+			font-style: italic;
+		}
+		
+		input[type=text] {
+			margin-top: 10px;
+			border: 1px solid $green;
+			background-color:transparent;
+			color: #fff;
+			font-style: italic;
+			height: 40px;
+			line-height: 40px;
+			width: 80%;
+			text-align: left;
+			padding-left: 20px;
+			vertical-align: bottom;
+		}
+		
+		input[type=submit] {
+			border: 0;
+			background-color: #fff;
+			height: 40px;
+			line-height: 40px;
+			color: $green;
+			text-transform: uppercase;
+			font-weight: 800;
+			padding: 0 30px;
+			vertical-align: bottom;
+			&:hover {
+				color: #fff;
+				background-color: $green;
 
+			}
+		}
+	}
+}
 .berghain {
 	position: absolute;
+	
 	top: 50%;
 	left: 50%;
 	transform: translateY(-50%) translateX(-50%);
-	margin-left: 150px;
+	
 	width: 450px;
 	height: 330px;
+	margin-left: 0 auto;
 	background: url('./bg.png') center top no-repeat transparent;
 }
 
@@ -104,3 +178,7 @@ ul {
 	margin: 0 auto;
 }
 
+
+.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
+	background-color: rgba(255, 255, 255, .7);
+}
