@@ -11,7 +11,6 @@ class AudioContextMakerLoader extends EventEmitter {
     constructor () {
         super();
         this.context = new AudioCtx();
-        this.audioAnimation = null;
         this.audioBuffer = null;
         this.sourceNode = null;
         this.analyser = null;
@@ -73,7 +72,7 @@ actxLoader.on('ended', () => {
  * Get informations from the AudioContextLoader and draw equalizer
  **/
 function drawSpectrum() {
-    actxLoader.audioAnimation = requestAnimationFrame(drawSpectrum);
+    audioAnimation = requestAnimationFrame(drawSpectrum);
 
     ctx.clearRect(0, 0, width, height);
     for (let i = 0; i < bars; i++) {
@@ -102,7 +101,9 @@ function populateList(tracks) {
 
     if (tracks.length) {
         const docFragment = document.createDocumentFragment(),
-            ul = document.createElement('ul');
+            ul = document.createElement('ul'),
+            links = [];
+
         tracks.forEach((track) => {
             const li = document.createElement('li'),
                 a = document.createElement('a');
@@ -110,14 +111,25 @@ function populateList(tracks) {
             a.textContent = a.title = track.title;
 
             a.addEventListener('click', scLoadTrack);
+
             li.appendChild(a);
             ul.appendChild(li);
+
+            links.push(li);
         });
 
         docFragment.appendChild(ul);
-
         list.appendChild(docFragment);
-        list.querySelector('a').click();
+
+        links[0].firstChild.click();
+
+        let index = 0;
+        setTimeout(function showIndex() {
+            links[index++].classList.add('show');
+            if (ul.parentNode && links[index]) {
+                setTimeout(showIndex, 100);
+            }
+        }, 100);
     } else {
         const span = document.createElement('span');
         span.classList.add('no-element');
@@ -146,12 +158,14 @@ function scLoadTrack(event) {
         currentLink = element;
         currentLink.parentNode.classList.add('playing');
         ctx.strokeStyle = '#249f89';
+        ctx.fillStyle = '#249f89';
         building.classList.add('active');
         actxLoader.loadURL(link + '?client_id=' + __CLIENT_ID__);
     } else {
         actxLoader.audio.pause();
         building.classList.remove('active');
         ctx.strokeStyle = '#999';
+        ctx.fillStyle = '#999';
         currentLink = null;
     }
 }
@@ -186,7 +200,6 @@ function onSubmit(event) {
             .then(fetchSC)
             .then(populateList)
             .catch((e) => {
-
                 populateList([]);
             });
     }
@@ -205,12 +218,15 @@ const __CLIENT_ID__ = '79ecc88b1e805bffdffe7b1665167d02',
     startX = width / 2 - ((bars / 2) * barSize + (spaces / 2) * spaceSize),
     ctx = canvas.getContext("2d"),
     building = document.getElementById('building');
-let currentLink = null;
+
+let currentLink = null,
+    audioAnimation = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     // init
     building.appendChild(canvas);
-    ctx.fillStyle = '#249f89';
+    ctx.fillStyle = '#999';
+    ctx.strokeStyle = '#999';
 
     SC.initialize({
         client_id: __CLIENT_ID__

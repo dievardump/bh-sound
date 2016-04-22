@@ -332,7 +332,6 @@ var AudioContextMakerLoader = function (_EventEmitter) {
         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AudioContextMakerLoader).call(this));
 
         _this.context = new AudioCtx();
-        _this.audioAnimation = null;
         _this.audioBuffer = null;
         _this.sourceNode = null;
         _this.analyser = null;
@@ -402,7 +401,7 @@ actxLoader.on('ended', function () {
  * Get informations from the AudioContextLoader and draw equalizer
  **/
 function drawSpectrum() {
-    actxLoader.audioAnimation = requestAnimationFrame(drawSpectrum);
+    audioAnimation = requestAnimationFrame(drawSpectrum);
 
     ctx.clearRect(0, 0, width, height);
     for (var i = 0; i < bars; i++) {
@@ -431,7 +430,9 @@ function populateList(tracks) {
     if (tracks.length) {
         (function () {
             var docFragment = document.createDocumentFragment(),
-                ul = document.createElement('ul');
+                ul = document.createElement('ul'),
+                links = [];
+
             tracks.forEach(function (track) {
                 var li = document.createElement('li'),
                     a = document.createElement('a');
@@ -439,14 +440,25 @@ function populateList(tracks) {
                 a.textContent = a.title = track.title;
 
                 a.addEventListener('click', scLoadTrack);
+
                 li.appendChild(a);
                 ul.appendChild(li);
+
+                links.push(li);
             });
 
             docFragment.appendChild(ul);
-
             list.appendChild(docFragment);
-            list.querySelector('a').click();
+
+            links[0].firstChild.click();
+
+            var index = 0;
+            setTimeout(function showIndex() {
+                links[index++].classList.add('show');
+                if (ul.parentNode && links[index]) {
+                    setTimeout(showIndex, 100);
+                }
+            }, 100);
         })();
     } else {
         var span = document.createElement('span');
@@ -476,12 +488,14 @@ function scLoadTrack(event) {
         currentLink = element;
         currentLink.parentNode.classList.add('playing');
         ctx.strokeStyle = '#249f89';
+        ctx.fillStyle = '#249f89';
         building.classList.add('active');
         actxLoader.loadURL(link + '?client_id=' + __CLIENT_ID__);
     } else {
         actxLoader.audio.pause();
         building.classList.remove('active');
         ctx.strokeStyle = '#999';
+        ctx.fillStyle = '#999';
         currentLink = null;
     }
 }
@@ -513,7 +527,6 @@ function onSubmit(event) {
     var url = document.getElementById('soundcloundURL').value;
     if (url) {
         SC.resolve(url).then(fetchSC).then(populateList).catch(function (e) {
-
             populateList([]);
         });
     }
@@ -532,12 +545,15 @@ var __CLIENT_ID__ = '79ecc88b1e805bffdffe7b1665167d02',
     startX = width / 2 - (bars / 2 * barSize + spaces / 2 * spaceSize),
     ctx = canvas.getContext("2d"),
     building = document.getElementById('building');
-var currentLink = null;
+
+var currentLink = null,
+    audioAnimation = null;
 
 document.addEventListener('DOMContentLoaded', function () {
     // init
     building.appendChild(canvas);
-    ctx.fillStyle = '#249f89';
+    ctx.fillStyle = '#999';
+    ctx.strokeStyle = '#999';
 
     SC.initialize({
         client_id: __CLIENT_ID__

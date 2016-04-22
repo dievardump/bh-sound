@@ -54,7 +54,14 @@ ul {
 		border-bottom: 1px solid $green;
 		
 		background-color: $grayDark;
-		transition: background-color .3s;
+		transition: background-color .3s, opacity .2s, left .2s;
+		
+		opacity: 0;
+		left: -50px;
+		&.show {
+			opacity: 1;
+			left: 0;
+		}
 		
 		&:nth-child(2n+1) {
 			background-color: $grayLight;
@@ -63,6 +70,7 @@ ul {
 		&:last-child {
 			border-bottom: none;
 		}
+		
 		
 		a {
 			color: $green;
@@ -79,7 +87,9 @@ ul {
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
+			
 			transition: color .3s;
+			
 			
 			&::before {
 				content: '';
@@ -182,9 +192,14 @@ main {
 	height: 330px;
 	margin-left: 0 auto;
 	
-	background: url('./bg-inactive.png') center top no-repeat transparent;
+	background: url('./bg-building.png') top right no-repeat transparent;
+	
+	transtion: opacity .3s;
+	
+	opacity: 0.3;
 	&.active {
-		background-image: url('./bg.png');
+		background-position: top left;
+		opacity: 1;
 	}
 }
 
