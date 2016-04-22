@@ -3,7 +3,8 @@
 
 $green = #249f89;
 $grayDark = #1b1b1b;
-$grayLight = #202020;
+$grayLight = lighten($grayDark, 5%);
+$gray = #999;
 * {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -32,6 +33,14 @@ body {
 	top: 0;
 	left: 0;
 	border-right: 1px solid $green;
+	
+	.no-element {
+		display: block;
+		font-style: italic;
+		color: $gray;
+		text-align:center;
+		margin: 20px 0
+	}
 }
 
 ul {
@@ -89,6 +98,9 @@ ul {
 		
 		&:hover {
 			background: alpha($green, .3);
+			a {
+				color: $gray;
+			}
 		}
 		
 		&.playing {
@@ -141,11 +153,11 @@ main {
 		}
 		
 		input[type=submit] {
-			border: 0;
 			background-color: #fff;
 			height: 40px;
 			line-height: 40px;
 			color: $green;
+			border: 1px solid $green;
 			text-transform: uppercase;
 			font-weight: 800;
 			padding: 0 30px;
@@ -153,12 +165,13 @@ main {
 			&:hover {
 				color: #fff;
 				background-color: $green;
+				border-color: #fff;
 
 			}
 		}
 	}
 }
-.berghain {
+.building {
 	position: absolute;
 	
 	top: 50%;
@@ -171,7 +184,7 @@ main {
 	background: url('./bg.png') center top no-repeat transparent;
 }
 
-.berghain canvas {
+.building canvas {
 	position: relative;
 	top: 60px;
 	display: block;

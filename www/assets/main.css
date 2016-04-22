@@ -274,6 +274,13 @@ body {
   left: 0;
   border-right: 1px solid #249f89;
 }
+.list .no-element {
+  display: block;
+  font-style: italic;
+  color: #999;
+  text-align: center;
+  margin: 20px 0;
+}
 ul {
   list-style: none;
 }
@@ -288,7 +295,7 @@ ul li {
   transition: background-color 0.3s;
 }
 ul li:nth-child(2n+1) {
-  background-color: #202020;
+  background-color: #262626;
 }
 ul li:last-child {
   border-bottom: none;
@@ -323,6 +330,9 @@ ul li a::before {
 }
 ul li:hover {
   background: rgba(36,159,137,0.3);
+}
+ul li:hover a {
+  color: #999;
 }
 ul li.playing {
   background: #249f89;
@@ -367,11 +377,11 @@ main form input[type=text] {
   vertical-align: bottom;
 }
 main form input[type=submit] {
-  border: 0;
   background-color: #fff;
   height: 40px;
   line-height: 40px;
   color: #249f89;
+  border: 1px solid #249f89;
   text-transform: uppercase;
   font-weight: 800;
   padding: 0 30px;
@@ -380,8 +390,9 @@ main form input[type=submit] {
 main form input[type=submit]:hover {
   color: #fff;
   background-color: #249f89;
+  border-color: #fff;
 }
-.berghain {
+.building {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -392,7 +403,7 @@ main form input[type=submit]:hover {
   margin-left: 0 auto;
   background: url("./bg.png") center top no-repeat transparent;
 }
-.berghain canvas {
+.building canvas {
   position: relative;
   top: 60px;
   display: block;
