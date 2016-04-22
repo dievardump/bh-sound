@@ -19,11 +19,11 @@ class AudioContextMakerLoader extends EventEmitter {
     }
 
     setupAudioNodes() {
-        let analyser = this.analyser = (analyser || this.context.createAnalyser());
+        const analyser = this.analyser = (this.analyser || this.context.createAnalyser());
         analyser.smoothingTimeConstant = 0.8;
         analyser.fftSize = 32;
 
-        let sourceNode = this.sourceNode = this.context.createMediaElementSource(this.audio);
+        const sourceNode = this.sourceNode = this.context.createMediaElementSource(this.audio);
         sourceNode.connect(analyser);
         sourceNode.connect(this.context.destination);
 

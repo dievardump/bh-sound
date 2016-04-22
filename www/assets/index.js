@@ -343,7 +343,7 @@ var AudioContextMakerLoader = function (_EventEmitter) {
     _createClass(AudioContextMakerLoader, [{
         key: 'setupAudioNodes',
         value: function setupAudioNodes() {
-            var analyser = this.analyser = analyser || this.context.createAnalyser();
+            var analyser = this.analyser = this.analyser || this.context.createAnalyser();
             analyser.smoothingTimeConstant = 0.8;
             analyser.fftSize = 32;
 
