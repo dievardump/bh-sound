@@ -401,7 +401,10 @@ main form input[type=submit]:hover {
   width: 450px;
   height: 330px;
   margin-left: 0 auto;
-  background: url("./bg.png") center top no-repeat transparent;
+  background: url("./bg-inactive.png") center top no-repeat transparent;
+}
+.building.active {
+  background-image: url("./bg.png");
 }
 .building canvas {
   position: relative;

@@ -312,14 +312,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //jshint esversion: 6
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-
-var Ps = require('perfect-scrollbar');
-
+//jshint esversion: 6
 if (!window.AudioContext && !window.webkitAudioContext) {
     throw new Error('AudioContext is required');
 }
+
+var Ps = require('perfect-scrollbar');
 
 var AudioCtx = window.AudioContext || window.webkitAudioContext;
 
@@ -397,26 +397,6 @@ actxLoader.on('ended', function () {
     }
 });
 
-var __CLIENT_ID__ = '79ecc88b1e805bffdffe7b1665167d02',
-    canvas = document.createElement('canvas'),
-    list = document.getElementById('list'),
-    error = document.getElementById('error'),
-    bars = 13,
-    spaces = bars - 1,
-    barSize = 18,
-    spaceSize = 11,
-    width = canvas.width = bars * barSize + spaces * spaceSize,
-    height = canvas.height = 160,
-    startX = width / 2 - (bars / 2 * barSize + spaces / 2 * spaceSize),
-    ctx = canvas.getContext("2d");
-
-document.getElementById('building').appendChild(canvas);
-
-ctx.fillStyle = '#249f89';
-ctx.strokeStyle = '#249f89';
-
-var currentLink = null;
-
 /**
  * Drawing function
  * Get informations from the AudioContextLoader and draw equalizer
@@ -471,7 +451,7 @@ function populateList(tracks) {
     } else {
         var span = document.createElement('span');
         span.classList.add('no-element');
-        span.textContent = 'No tracks to play';
+        span.textContent = 'No track to play.';
         list.appendChild(span);
     }
 
@@ -491,12 +471,17 @@ function scLoadTrack(event) {
     if (currentLink) {
         currentLink.parentNode.classList.remove('playing');
     }
+
     if (element !== currentLink) {
         currentLink = element;
         currentLink.parentNode.classList.add('playing');
+        ctx.strokeStyle = '#249f89';
+        building.classList.add('active');
         actxLoader.loadURL(link + '?client_id=' + __CLIENT_ID__);
     } else {
         actxLoader.audio.pause();
+        building.classList.remove('active');
+        ctx.strokeStyle = '#999';
         currentLink = null;
     }
 }
@@ -528,13 +513,31 @@ function onSubmit(event) {
     var url = document.getElementById('soundcloundURL').value;
     if (url) {
         SC.resolve(url).then(fetchSC).then(populateList).catch(function (e) {
-            console.log(e);
+
             populateList([]);
         });
     }
 }
 
+var __CLIENT_ID__ = '79ecc88b1e805bffdffe7b1665167d02',
+    canvas = document.createElement('canvas'),
+    list = document.getElementById('list'),
+    error = document.getElementById('error'),
+    bars = 13,
+    spaces = bars - 1,
+    barSize = 18,
+    spaceSize = 11,
+    width = canvas.width = bars * barSize + spaces * spaceSize,
+    height = canvas.height = 160,
+    startX = width / 2 - (bars / 2 * barSize + spaces / 2 * spaceSize),
+    ctx = canvas.getContext("2d"),
+    building = document.getElementById('building');
+var currentLink = null;
+
 document.addEventListener('DOMContentLoaded', function () {
+    // init
+    building.appendChild(canvas);
+    ctx.fillStyle = '#249f89';
 
     SC.initialize({
         client_id: __CLIENT_ID__

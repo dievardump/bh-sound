@@ -1,10 +1,10 @@
 //jshint esversion: 6
-import { EventEmitter } from 'events';
-const Ps = require('perfect-scrollbar');
-
 if (!window.AudioContext && !window.webkitAudioContext) {
     throw new Error('AudioContext is required');
 }
+
+import { EventEmitter } from 'events';
+const Ps = require('perfect-scrollbar');
 
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 class AudioContextMakerLoader extends EventEmitter {
@@ -68,27 +68,6 @@ actxLoader.on('ended', () => {
     }
 });
 
-    
-const __CLIENT_ID__ = '79ecc88b1e805bffdffe7b1665167d02',
-    canvas = document.createElement('canvas'),
-    list = document.getElementById('list'),
-    error = document.getElementById('error'),
-    bars = 13,
-    spaces = bars - 1,
-    barSize = 18,
-    spaceSize = 11,
-    width = canvas.width = bars * barSize + spaces * spaceSize,
-    height = canvas.height = 160,
-    startX = width / 2 - ((bars / 2) * barSize + (spaces / 2) * spaceSize),
-    ctx = canvas.getContext("2d");
-
-document.getElementById('building').appendChild(canvas);
-
-ctx.fillStyle = '#249f89';
-ctx.strokeStyle = '#249f89';
-
-let currentLink = null;
-
 /**
  * Drawing function
  * Get informations from the AudioContextLoader and draw equalizer
@@ -142,7 +121,7 @@ function populateList(tracks) {
     } else {
         const span = document.createElement('span');
         span.classList.add('no-element');
-        span.textContent = 'No tracks to play';
+        span.textContent = 'No track to play.';
         list.appendChild(span);
     }
 
@@ -162,12 +141,17 @@ function scLoadTrack(event) {
     if (currentLink) {
         currentLink.parentNode.classList.remove('playing');
     }
+
     if (element !== currentLink) {
         currentLink = element;
         currentLink.parentNode.classList.add('playing');
+        ctx.strokeStyle = '#249f89';
+        building.classList.add('active');
         actxLoader.loadURL(link + '?client_id=' + __CLIENT_ID__);
     } else {
         actxLoader.audio.pause();
+        building.classList.remove('active');
+        ctx.strokeStyle = '#999';
         currentLink = null;
     }
 }
@@ -202,14 +186,31 @@ function onSubmit(event) {
             .then(fetchSC)
             .then(populateList)
             .catch((e) => {
-                console.log(e);
+
                 populateList([]);
             });
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+const __CLIENT_ID__ = '79ecc88b1e805bffdffe7b1665167d02',
+    canvas = document.createElement('canvas'),
+    list = document.getElementById('list'),
+    error = document.getElementById('error'),
+    bars = 13,
+    spaces = bars - 1,
+    barSize = 18,
+    spaceSize = 11,
+    width = canvas.width = bars * barSize + spaces * spaceSize,
+    height = canvas.height = 160,
+    startX = width / 2 - ((bars / 2) * barSize + (spaces / 2) * spaceSize),
+    ctx = canvas.getContext("2d"),
+    building = document.getElementById('building');
+let currentLink = null;
 
+document.addEventListener('DOMContentLoaded', () => {
+    // init
+    building.appendChild(canvas);
+    ctx.fillStyle = '#249f89';
 
     SC.initialize({
         client_id: __CLIENT_ID__

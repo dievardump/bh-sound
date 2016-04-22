@@ -181,7 +181,11 @@ main {
 	width: 450px;
 	height: 330px;
 	margin-left: 0 auto;
-	background: url('./bg.png') center top no-repeat transparent;
+	
+	background: url('./bg-inactive.png') center top no-repeat transparent;
+	&.active {
+		background-image: url('./bg.png');
+	}
 }
 
 .building canvas {
