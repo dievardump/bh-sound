@@ -316,7 +316,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 //jshint esversion: 6
 if (!window.AudioContext && !window.webkitAudioContext) {
-    throw new Error('AudioContext is required');
+    document.body.classList.add('error');
+    throw new Error('AudioContext is required; Please try with Chrome or Firefox');
 }
 
 var Ps = require('perfect-scrollbar');
@@ -404,8 +405,11 @@ function drawSpectrum() {
     audioAnimation = requestAnimationFrame(drawSpectrum);
 
     ctx.clearRect(0, 0, width, height);
+
     for (var i = 0; i < bars; i++) {
-        ctx.strokeRect(startX + i * (barSize + spaceSize), 0, barSize, height);
+        ctx.strokeRect(startX + i * (barSize + spaceSize), 0, barSize, sixth);
+        ctx.strokeRect(startX + i * (barSize + spaceSize), sixth + sixth / 2, barSize, sixth * 3);
+        ctx.strokeRect(startX + i * (barSize + spaceSize), sixth * 5, barSize, sixth);
     }
 
     var analyser = actxLoader.analyser;
@@ -417,6 +421,11 @@ function drawSpectrum() {
             ctx.fillRect(startX + _i * (barSize + spaceSize), height - value, barSize, height);
         }
     }
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.drawImage(clipCanvas, 0, 0);
+    ctx.restore();
 }
 
 /**
@@ -542,12 +551,32 @@ var __CLIENT_ID__ = '79ecc88b1e805bffdffe7b1665167d02',
     spaceSize = 11,
     width = canvas.width = bars * barSize + spaces * spaceSize,
     height = canvas.height = 160,
+    sixth = height / 6,
     startX = width / 2 - (bars / 2 * barSize + spaces / 2 * spaceSize),
     ctx = canvas.getContext("2d"),
     building = document.getElementById('building');
 
 var currentLink = null,
-    audioAnimation = null;
+    audioAnimation = null,
+    clipCanvas = null;
+
+function createGhostCanvas() {
+    var canvas = document.createElement('canvas'),
+        ctx = canvas.getContext('2d');
+    canvas.width = width;
+    canvas.height = height;
+
+    ctx.fillStyle = '#fff';
+    for (var i = 0; i < bars; i++) {
+        ctx.fillRect(startX + i * (barSize + spaceSize), 0, barSize, sixth);
+        ctx.fillRect(startX + i * (barSize + spaceSize), sixth + sixth / 2, barSize, sixth * 3);
+        ctx.fillRect(startX + i * (barSize + spaceSize), sixth * 5, barSize, sixth);
+    }
+
+    return canvas;
+}
+
+clipCanvas = createGhostCanvas();
 
 document.addEventListener('DOMContentLoaded', function () {
     // init

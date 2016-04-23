@@ -24,8 +24,22 @@ html, body {
 body {
 	background-color: $grayDark;
 	padding-left: 300px;
+	
+	&.error .need-audio {
+		display: block;	
+	}
 }
 
+.need-audio {
+	display: none;
+	text-align: center;
+	padding-left: 0;
+	padding-top: 10px;
+	color: red;
+	opacity: .7;
+	font-weigth: 800;
+	text-transform: uppercase;
+}
 .list {
 	position: absolute;
 	width: 300px;
